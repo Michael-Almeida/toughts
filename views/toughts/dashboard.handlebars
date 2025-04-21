@@ -4,16 +4,23 @@
     <a href="/toughts/add" class="btn">Criar pensamento</a>
   </div>
   <h3>Pensamentos</h3>
-  {{#each toughts}}
-    <li>
-      <span class="label">{{this.title}}</span>
-      <span class="actions">
-        <a href="/" class="btn">Editar</a>
-        <form action="/">
-          <input type="hidden" name="id" value="{{this.id}}" />
-          <input type="submit" value="Excluir" class="btn" />
-        </form>
-      </span>
-    </li>
-  {{/each}}
+  <ul>
+    {{#each toughts}}
+      <li>
+        <span class="label">{{this.title}}</span>
+        <span class="actions">
+          <a href="/" class="btn">Editar</a>
+          <form action="/toughts/remove" method="POST">
+            <input type="hidden" name="id" value="{{this.id}}" />
+            <input type="submit" value="Excluir" class="btn" />
+          </form>
+        </span>
+      </li>
+    {{/each}}
+  </ul>
+  {{#if emptyToughts}}
+    <p>Ainda não há nenhum pensamento seu, comece a criar pensamentos
+      <a href="/toughts/add">Por aqui!</a>
+    </p>
+  {{/if}}
 </div>

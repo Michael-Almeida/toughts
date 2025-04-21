@@ -14,12 +14,18 @@ module.exports = class ToughtController {
       plain: true,
     });
 
-    const toughts = user.Toughts.map((result)=>result.dataValues)
-    // console.log(toughts)
+    const toughts = user.Toughts.map((result) => result.dataValues);
+
+    let emptyToughts = false;
+
+    if (toughts.length === 0) {
+      emptyToughts = true;
+    }
+
     if (!user) {
       res.redirect("/login");
     }
-    res.render("toughts/dashboard",{toughts});
+    res.render("toughts/dashboard", { toughts, emptyToughts });
   }
 
   static createTought(req, res) {
@@ -35,6 +41,23 @@ module.exports = class ToughtController {
     try {
       await Tought.create(tought);
       req.flash("message", "Pensamento adicionado com sucesso!");
+
+      req.session.save(() => {
+        res.redirect("/toughts/dashboard");
+      });
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  static async removeTought(req, res) {
+    const id = req.body.id;
+    const userId = req.session.userid;
+
+    try {
+      await Tought.destroy({ where: { id: id, UserId: userId } });
+
+      req.flash("message", "Pensamento removido com sucesso!");
 
       req.session.save(() => {
         res.redirect("/toughts/dashboard");
